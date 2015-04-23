@@ -13,8 +13,13 @@ public class CalcTest {
     private CalcContext context = new CalcContext();
 
     @Test
-    public void test() throws CalculationException {
+    public void testValue() throws CalculationException {
         assertEquals(4, context.createExpression("4").evaluate().getValue(), DELTA);
+    }
+
+    @Test
+    public void testAddition() throws CalculationException {
+        assertEquals(13, context.createExpression("4 + 9").evaluate().getValue(), DELTA);
     }
 
 }
