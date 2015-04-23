@@ -48,11 +48,11 @@ public class CalcContext {
             if (opIndex != -1) {
                 String before = expression.substring(0, opIndex);
                 String after = expression.substring(opIndex + key.length());
-                return new OperatorExpression(this, op.getOp(), before, after);
+                return new OperatorExpression(this, op, before, after);
             }
         }
 
-        throw new CalculationException("Not sure what to do with expression: " + expression);
+        throw new CalculationException("Not sure what to do with expression: '" + expression + "'");
     }
 
     private static int findFirstMatchingRightParen(String str) throws CalculationException {
@@ -80,7 +80,7 @@ public class CalcContext {
         context.functions.put("abs", new CalcFunction(exp -> exp.length == 1, exp -> Math.abs(exp[0].getValue())));
 
         context.operators.add(new Operator("+", (a, b) -> a + b));
-        context.operators.add(new Operator("-", (a, b) -> a - b));
+        context.operators.add(new Operator("-", (a, b) -> a - b, a -> -a));
 
         context.operators.add(new Operator("*", (a, b) -> a * b));
         context.operators.add(new Operator("/", (a, b) -> a / b));
