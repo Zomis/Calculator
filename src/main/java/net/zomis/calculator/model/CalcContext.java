@@ -44,6 +44,7 @@ public class CalcContext {
     public static CalcContext createDefault() {
         CalcContext context = new CalcContext();
         context.operators.add(new Operator("+", (a, b) -> a + b));
+        context.operators.add(new Operator("*", (a, b) -> a * b));
         return context;
     }
 
