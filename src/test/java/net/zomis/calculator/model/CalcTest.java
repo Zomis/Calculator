@@ -1,45 +1,44 @@
 package net.zomis.calculator.model;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Simon on 4/23/2015.
  */
+@RunWith(Parameterized.class)
 public class CalcTest {
 
     private static final double DELTA = 0.00001;
-    private final CalcContext context = CalcContext.createDefault();
 
-    @Test
-    public void testValue() throws CalculationException {
-        assertEquals(4, context.createExpression("4").evaluate().getValue(), DELTA);
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+                {"4", 4},
+                {"4 + 9", 13},
+                {"-4 + -4.2", -8.2},
+                {"4 * 9", 36},
+                {"2 + 7 * 3", 23},
+                {"7 * 3 + 2", 23},
+        });
     }
 
-    @Test
-    public void testAddition() throws CalculationException {
-        assertEquals(13, context.createExpression("4 + 9").evaluate().getValue(), DELTA);
-    }
+    @Parameterized.Parameter(0)
+    public String input;
+
+    @Parameterized.Parameter(1)
+    public double expected;
 
     @Test
-    public void testNegativeNumbers() throws CalculationException {
-        assertEquals(-8.2, context.createExpression("-4 + -4.2").evaluate().getValue(), DELTA);
-    }
-
-    @Test
-    public void testMultiplication() throws CalculationException {
-        assertEquals(36, context.createExpression("4 * 9").evaluate().getValue(), DELTA);
-    }
-
-    @Test
-    public void testPrecendenceA() throws CalculationException {
-        assertEquals(23, context.createExpression("2 + 7 * 3").evaluate().getValue(), DELTA);
-    }
-
-    @Test
-    public void testPrecendenceB() throws CalculationException {
-        assertEquals(23, context.createExpression("7 * 3 + 2").evaluate().getValue(), DELTA);
+    public void test() throws CalculationException {
+        CalcContext context = CalcContext.createDefault();
+        assertEquals(input, expected, context.createExpression(input).evaluate().getValue(), DELTA);
     }
 
 }
