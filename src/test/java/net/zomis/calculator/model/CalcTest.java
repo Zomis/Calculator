@@ -23,6 +23,11 @@ public class CalcTest {
     }
 
     @Test
+    public void testNegativeNumbers() throws CalculationException {
+        assertEquals(-8.2, context.createExpression("-4 + -4.2").evaluate().getValue(), DELTA);
+    }
+
+    @Test
     public void testMultiplication() throws CalculationException {
         assertEquals(36, context.createExpression("4 * 9").evaluate().getValue(), DELTA);
     }

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public class CalcContext {
 
-    private static final Pattern VALUE = Pattern.compile("^\\d+(\\.\\d+)?$");
+    private static final Pattern VALUE = Pattern.compile("^-?\\d+(\\.\\d+)?$");
     private final List<Operator> operators = new ArrayList<>();
 
     private CalcContext() {}
