@@ -37,7 +37,7 @@ public class CalcContext {
                 throw new CalculationException("Unknown function name: " + functionName + " in expression " + expression);
             }
             int rightParen = findFirstMatchingRightParen(expression);
-            String params = expression.substring(functionName.length() + 2, rightParen);
+            String params = expression.substring(functionName.length() + 1, rightParen);
 
             return func.evaluate(this, params);
         }
