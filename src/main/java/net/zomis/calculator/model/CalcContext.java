@@ -1,7 +1,5 @@
 package net.zomis.calculator.model;
 
-import net.zomis.calculator.model.CalculationException;
-import net.zomis.calculator.model.Expression;
 import net.zomis.calculator.model.expressions.OperatorExpression;
 import net.zomis.calculator.model.expressions.ValueExpression;
 
@@ -27,7 +25,8 @@ public class CalcContext {
             return new ValueExpression(Double.parseDouble(expression));
         }
 
-        // TODO: List of operators and functions
+        // TODO: Add support for function calls
+
         for (Operator op : operators) {
             String key = op.getKey();
             int opIndex = expression.indexOf(key);
@@ -44,7 +43,10 @@ public class CalcContext {
     public static CalcContext createDefault() {
         CalcContext context = new CalcContext();
         context.operators.add(new Operator("+", (a, b) -> a + b));
+        context.operators.add(new Operator("-", (a, b) -> a - b));
+
         context.operators.add(new Operator("*", (a, b) -> a * b));
+        context.operators.add(new Operator("/", (a, b) -> a / b));
         return context;
     }
 
