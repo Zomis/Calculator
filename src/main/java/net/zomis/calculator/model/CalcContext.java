@@ -4,7 +4,9 @@ import net.zomis.calculator.model.expressions.OperatorExpression;
 import net.zomis.calculator.model.expressions.ValueExpression;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +16,9 @@ import java.util.regex.Pattern;
 public class CalcContext {
 
     private static final Pattern VALUE = Pattern.compile("^-?\\d+(\\.\\d+)?$");
+    private static final Pattern FUNCTION_CALL = Pattern.compile("^([a-zA-Z]+)\\(");
     private final List<Operator> operators = new ArrayList<>();
+    private final Map<String, CalcFunction> functions = new HashMap<>();
 
     private CalcContext() {}
 
@@ -25,7 +29,18 @@ public class CalcContext {
             return new ValueExpression(Double.parseDouble(expression));
         }
 
-        // TODO: Add support for function calls
+        matcher = FUNCTION_CALL.matcher(expression);
+        if (matcher.find()) {
+            String functionName = matcher.group(1);
+            CalcFunction func = functions.get(functionName);
+            if (func == null) {
+                throw new CalculationException("Unknown function name: " + functionName + " in expression " + expression);
+            }
+            int rightParen = findFirstMatchingRightParen(expression);
+            String params = expression.substring(functionName.length() + 2, rightParen);
+
+            return func.evaluate(this, params);
+        }
 
         for (Operator op : operators) {
             String key = op.getKey();
@@ -40,8 +55,30 @@ public class CalcContext {
         throw new CalculationException("Not sure what to do with expression: " + expression);
     }
 
+    private static int findFirstMatchingRightParen(String str) throws CalculationException {
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            char ch = str.charAt(i);
+            if (ch == '(') {
+                count++;
+            }
+            if (ch == ')') {
+                count--;
+                if (count == 0) {
+                    return i;
+                }
+                if (count < 0) {
+                    throw new CalculationException("Unexpected right paren: " + str);
+                }
+            }
+        }
+        return -1;
+    }
+
     public static CalcContext createDefault() {
         CalcContext context = new CalcContext();
+        context.functions.put("abs", new CalcFunction(exp -> exp.length == 1, exp -> Math.abs(exp[0].getValue())));
+
         context.operators.add(new Operator("+", (a, b) -> a + b));
         context.operators.add(new Operator("-", (a, b) -> a - b));
 
