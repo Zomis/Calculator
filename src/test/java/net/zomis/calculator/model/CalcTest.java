@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 public class CalcTest {
 
     private static final double DELTA = 0.00001;
-    private CalcContext context = new CalcContext();
+    private final CalcContext context = CalcContext.createDefault();
 
     @Test
     public void testValue() throws CalculationException {

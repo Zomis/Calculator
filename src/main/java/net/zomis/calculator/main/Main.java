@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) throws CalculationException {
         try (Scanner scanner = new Scanner(System.in)) {
-            CalcContext context = new CalcContext();
+            CalcContext context = CalcContext.createDefault();
             while (true) {
                 String expression = scanner.nextLine();
                 if (expression.isEmpty()) {
