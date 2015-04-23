@@ -47,7 +47,11 @@ public class CalcTest {
     @Test
     public void test() throws CalculationException {
         CalcContext context = CalcContext.createDefault();
-        assertEquals(input, expected, context.createExpression(input).evaluate().getValue(), DELTA);
+        try {
+            assertEquals(input, expected, context.createExpression(input).evaluate().getValue(), DELTA);
+        } catch (CalculationException ex) {
+            throw new RuntimeException(input, ex);
+        }
     }
 
 }
