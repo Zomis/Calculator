@@ -10,7 +10,7 @@ public class Expression {
     public Expression() {
     }
 
-    public ValueExpression evaluate() {
+    public ValueExpression evaluate() throws CalculationException {
         throw new UnsupportedOperationException(this.toString());
     }
 

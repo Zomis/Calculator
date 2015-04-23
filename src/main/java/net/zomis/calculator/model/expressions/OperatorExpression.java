@@ -25,7 +25,7 @@ public class OperatorExpression extends Expression {
     }
 
     @Override
-    public ValueExpression evaluate() {
+    public ValueExpression evaluate() throws CalculationException {
         if (before == null) {
             return new ValueExpression(operator.getUnaryOperator().applyAsDouble(after.evaluate().getValue()));
         } else {

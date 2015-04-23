@@ -2,6 +2,7 @@ package net.zomis.calculator.model;
 
 import net.zomis.calculator.model.expressions.OperatorExpression;
 import net.zomis.calculator.model.expressions.ValueExpression;
+import net.zomis.calculator.model.expressions.VariableExpression;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +17,11 @@ import java.util.regex.Pattern;
 public class CalcContext {
 
     private static final Pattern VALUE = Pattern.compile("^-?\\d+(\\.\\d+)?$");
+    private static final Pattern IDENTIFIER = Pattern.compile("^[A-Za-z][A-Za-z\\d_]*$");
     private static final Pattern FUNCTION_CALL = Pattern.compile("^([a-zA-Z]+)\\(");
     private final List<Operator> operators = new ArrayList<>();
     private final Map<String, CalcFunction> functions = new HashMap<>();
+    private final Map<String, Expression> variables = new HashMap<>();
 
     private CalcContext() {}
 
@@ -27,6 +30,14 @@ public class CalcContext {
         Matcher matcher = VALUE.matcher(expression);
         if (matcher.find()) {
             return new ValueExpression(Double.parseDouble(expression));
+        }
+
+        matcher = IDENTIFIER.matcher(expression);
+        if (matcher.find()) {
+            if (!variables.containsKey(expression)) {
+                throw new CalculationException("Unknown identifier: " + expression);
+            }
+            return variables.get(expression);
         }
 
         matcher = FUNCTION_CALL.matcher(expression);
@@ -41,6 +52,18 @@ public class CalcContext {
 
             ValueExpression funcResult = func.evaluate(this, params);
             return createExpression(funcResult.getValue() + " " + expression.substring(rightParen + 1));
+        }
+
+        if (expression.contains("=")) {
+            String key = "=";
+            int opIndex = expression.indexOf(key);
+            if (opIndex != -1) {
+                String before = expression.substring(0, opIndex);
+                String after = expression.substring(opIndex + key.length());
+                VariableExpression var = new VariableExpression(this, after);
+                variables.put(before.trim(), var);
+                return var;
+            }
         }
 
         for (Operator op : operators) {
