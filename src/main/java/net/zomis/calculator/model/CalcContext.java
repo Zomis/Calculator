@@ -39,7 +39,8 @@ public class CalcContext {
             int rightParen = findFirstMatchingRightParen(expression);
             String params = expression.substring(functionName.length() + 1, rightParen);
 
-            return func.evaluate(this, params);
+            ValueExpression funcResult = func.evaluate(this, params);
+            return createExpression(funcResult.getValue() + " " + expression.substring(rightParen + 1));
         }
 
         for (Operator op : operators) {
@@ -47,6 +48,9 @@ public class CalcContext {
             int opIndex = expression.indexOf(key);
             if (opIndex != -1) {
                 String before = expression.substring(0, opIndex);
+                if (before.contains("(")) {
+                    continue;
+                }
                 String after = expression.substring(opIndex + key.length());
                 return new OperatorExpression(this, op, before, after);
             }
