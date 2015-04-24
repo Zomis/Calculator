@@ -113,6 +113,8 @@ public class CalcContext {
 
         context.operators.add(new Operator("*", (a, b) -> a * b));
         context.operators.add(new Operator("/", (a, b) -> a / b));
+
+        context.operators.add(new Operator("^", (a, b) -> Math.pow(a, b)));
         return context;
     }
 
