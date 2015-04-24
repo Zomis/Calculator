@@ -56,6 +56,17 @@ public class CalcContext {
             return createExpression(beforeFunction + funcResult.getValue() + " " + afterRightParen);
         }
 
+        int paren = expression.indexOf('(');
+        if (paren != -1) {
+            int rightParen = findFirstMatchingRightParen(expression);
+            String params = expression.substring(paren + 1, rightParen);
+            String afterRightParen = expression.substring(rightParen + 1);
+            String beforeFunction = expression.substring(0, paren);
+
+            ValueExpression funcResult = createExpression(params).evaluate();
+            return createExpression(beforeFunction + funcResult.getValue() + " " + afterRightParen);
+        }
+
         if (expression.contains("=")) {
             String key = "=";
             int opIndex = expression.indexOf(key);
