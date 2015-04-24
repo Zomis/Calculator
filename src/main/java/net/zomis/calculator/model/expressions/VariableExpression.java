@@ -3,7 +3,6 @@ package net.zomis.calculator.model.expressions;
 import net.zomis.calculator.model.CalcContext;
 import net.zomis.calculator.model.CalculationException;
 import net.zomis.calculator.model.Expression;
-import net.zomis.calculator.model.expressions.ValueExpression;
 
 /**
  * Created by Simon on 4/24/2015.

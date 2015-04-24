@@ -18,7 +18,7 @@ public class CalcContext {
 
     private static final Pattern VALUE = Pattern.compile("^-?\\d+(\\.\\d+)?$");
     private static final Pattern IDENTIFIER = Pattern.compile("^[A-Za-z][A-Za-z\\d_]*$");
-    private static final Pattern FUNCTION_CALL = Pattern.compile("^([a-zA-Z]+)\\(");
+    private static final Pattern FUNCTION_CALL = Pattern.compile("([a-zA-Z]+)\\(");
     private final List<Operator> operators = new ArrayList<>();
     private final Map<String, CalcFunction> functions = new HashMap<>();
     private final Map<String, Expression> variables = new HashMap<>();
@@ -48,10 +48,12 @@ public class CalcContext {
                 throw new CalculationException("Unknown function name: " + functionName + " in expression " + expression);
             }
             int rightParen = findFirstMatchingRightParen(expression);
-            String params = expression.substring(functionName.length() + 1, rightParen);
+            String params = expression.substring(matcher.start(1) + functionName.length() + 1, rightParen);
+            String afterRightParen = expression.substring(rightParen + 1);
+            String beforeFunction = expression.substring(0, matcher.start(1));
 
             ValueExpression funcResult = func.evaluate(this, params);
-            return createExpression(funcResult.getValue() + " " + expression.substring(rightParen + 1));
+            return createExpression(beforeFunction + funcResult.getValue() + " " + afterRightParen);
         }
 
         if (expression.contains("=")) {
@@ -68,7 +70,7 @@ public class CalcContext {
 
         for (Operator op : operators) {
             String key = op.getKey();
-            int opIndex = expression.indexOf(key);
+            int opIndex = expression.lastIndexOf(key);
             if (opIndex != -1) {
                 String before = expression.substring(0, opIndex);
                 if (before.contains("(")) {
