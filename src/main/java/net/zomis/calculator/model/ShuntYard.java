@@ -1,8 +1,6 @@
 package net.zomis.calculator.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by Simon on 4/26/2015.
@@ -37,33 +35,37 @@ public class ShuntYard {
             }
 
             int opLength = -1;
-            for (Operator op : context.operators) {
-                opLength = match(data, end, op.getKey()) ? op.getKey().length() : opLength;
-            }
-            for (String op : context.functions.keySet()) {
-                opLength = match(data, end, op) && data.charAt(end + op.length()) == '('
-                        ? op.length() + 1 : opLength;
-            }
-            if (data.charAt(end) == ',') {
+            Token token = null;
+            final int currEnd = end;
+
+            if (data.charAt(end) == ',' || data.charAt(end) == '(' || data.charAt(end) == ')') {
                 opLength = 1;
-            }
-            if (data.charAt(end) == ')') {
-                opLength = 1;
-            }
-            if (data.charAt(end) == '(') {
-                opLength = 1;
+                token = new Token(data.substring(end, end + opLength).trim(), true);
+            } else {
+                Optional<Operator> operator = context.operators.stream().filter(op -> match(data, currEnd, op.getKey())).findFirst();
+                if (operator.isPresent()) {
+                    opLength = operator.get().getKey().length();
+                    token = new Token(data.substring(end, end + opLength).trim(), true);
+                } else {
+                    Optional<Map.Entry<String, CalcFunction>> function = context.functions.entrySet()
+                            .stream()
+                            .filter(fnc -> match(data, currEnd, fnc.getKey()))
+                            .filter(fnc -> data.charAt(currEnd + fnc.getKey().length()) == '(')
+                            .findFirst();
+
+                    if (function.isPresent()) {
+                        opLength = function.get().getKey().length() + 1;
+                        token = new Token(data.substring(end, end + opLength).trim(), true);
+                    }
+                }
             }
 
-            if (opLength > 0) {
+            if (token != null) {
                 String op = data.substring(i, end).trim();
                 if (!op.isEmpty()) {
                     results.add(new Token(op, false));
                 }
-
-                String valueString = data.substring(end, end + opLength).trim();
-                if (!valueString.isEmpty()) {
-                    results.add(new Token(valueString, true));
-                }
+                results.add(token);
                 end += opLength - 1;
                 i = end + 1;
             }
