@@ -50,6 +50,9 @@ public class ShuntYard {
             if (data.charAt(end) == ')') {
                 opLength = 1;
             }
+            if (data.charAt(end) == '(') {
+                opLength = 1;
+            }
 
             if (opLength > 0) {
                 String op = data.substring(i, end).trim();

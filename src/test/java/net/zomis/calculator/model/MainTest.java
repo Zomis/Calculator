@@ -35,4 +35,16 @@ public class MainTest {
         List<String> actual = tokens.stream().map(Token::getString).collect(Collectors.toList());
         assertEquals(expected, actual);
     }
+
+    @Test
+    public void tokenize2() throws Exception {
+        String input = "-4 + (3 * 7 ) - 12 / 1.23";
+        ShuntYard shunt = new ShuntYard(CalcContext.createDefault());
+        List<Token> tokens = shunt.tokenize(input);
+        List<String> expected = Arrays.asList("-","4","+","(","3","*","7",")","-","12",
+                "/","1.23");
+        List<String> actual = tokens.stream().map(Token::getString).collect(Collectors.toList());
+        assertEquals(expected, actual);
+    }
+
 }
