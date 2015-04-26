@@ -119,13 +119,13 @@ public class CalcContext {
         CalcContext context = new CalcContext();
         context.functions.put("abs", new CalcFunction(exp -> exp.length == 1, exp -> Math.abs(exp[0].getValue())));
 
-        context.operators.add(new Operator("+", (a, b) -> a + b));
-        context.operators.add(new Operator("-", (a, b) -> a - b, a -> -a));
+        context.operators.add(new Operator("+", Associativity.LEFT, 2, (a, b) -> a + b));
+        context.operators.add(new Operator("-", Associativity.LEFT, 2, (a, b) -> a - b, a -> -a));
 
-        context.operators.add(new Operator("*", (a, b) -> a * b));
-        context.operators.add(new Operator("/", (a, b) -> a / b));
+        context.operators.add(new Operator("*", Associativity.LEFT, 3, (a, b) -> a * b));
+        context.operators.add(new Operator("/", Associativity.LEFT, 3, (a, b) -> a / b));
 
-        context.operators.add(new Operator("^", (a, b) -> Math.pow(a, b)));
+        context.operators.add(new Operator("^", Associativity.RIGHT, 4, (a, b) -> Math.pow(a, b)));
         return context;
     }
 

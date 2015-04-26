@@ -9,7 +9,7 @@ public abstract class Token {
 
     @Override
     public String toString() {
-        return opType() + getString();
+        return opType() + ':' + getString();
     }
 
     public abstract String getString();

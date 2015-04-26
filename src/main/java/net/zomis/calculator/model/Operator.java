@@ -11,13 +11,17 @@ public class Operator {
     private final String key;
     private final DoubleBinaryOperator op;
     private final DoubleUnaryOperator unaryOperator;
+    private final Associativity associativity;
+    private final int precendence;
 
-    public Operator(String key, DoubleBinaryOperator operator) {
-        this(key, operator, null);
+    public Operator(String key, Associativity associativity, int precendence, DoubleBinaryOperator operator) {
+        this(key, associativity, precendence, operator, null);
     }
 
-    public Operator(String key, DoubleBinaryOperator operator, DoubleUnaryOperator unaryOperator) {
+    public Operator(String key, Associativity associativity, int precendence, DoubleBinaryOperator operator, DoubleUnaryOperator unaryOperator) {
         this.key = key;
+        this.associativity = associativity;
+        this.precendence = precendence;
         this.op = operator;
         this.unaryOperator = unaryOperator;
     }
@@ -32,5 +36,13 @@ public class Operator {
 
     public DoubleUnaryOperator getUnaryOperator() {
         return unaryOperator;
+    }
+
+    public Associativity getAssociativity() {
+        return associativity;
+    }
+
+    public int getPrecendence() {
+        return precendence;
     }
 }

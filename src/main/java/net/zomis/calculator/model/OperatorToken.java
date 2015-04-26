@@ -19,4 +19,16 @@ public class OperatorToken extends Token {
     public String opType() {
         return "OP";
     }
+
+    public boolean isLeftAssociative() {
+        return operator.getAssociativity() == Associativity.LEFT;
+    }
+
+    public boolean isRightAssociative() {
+        return operator.getAssociativity() == Associativity.RIGHT;
+    }
+
+    public int getPrecendence() {
+        return operator.getPrecendence();
+    }
 }

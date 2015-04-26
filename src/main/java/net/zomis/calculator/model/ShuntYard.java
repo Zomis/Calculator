@@ -83,10 +83,70 @@ public class ShuntYard {
         return data.regionMatches(pos, key, 0, key.length());
     }
 
-    public List<String> convert(String data) {
-        List<String> results = new ArrayList<>();
+    public List<Token> shuntYard(List<Token> tokens) throws CalculationException {
+        List<Token> output = new ArrayList<>();
+//        Stack<Token> stack = new Stack<>();
+        LinkedList<Token> stack = new LinkedList<>();
 
-        return results;
+        for (Token token : tokens) {
+
+            if (token instanceof ValueToken) {
+                output.add(token);
+            }
+            if (token instanceof FunctionToken) {
+                stack.push(token);
+            }
+            if (token instanceof SeparatorToken) {
+                SeparatorToken sep = (SeparatorToken) token;
+                if (sep.getString().equals(",")) {
+                    do {
+                        output.add(stack.pop());
+                    } while (!isLeftParen(stack.peek()));
+                    output.add(token);
+                }
+                if (sep.getString().equals("(")) {
+                    stack.push(token);
+                }
+                if (sep.getString().equals(")")) {
+                    do {
+                        output.add(stack.pop());
+                    } while (!isLeftParen(stack.peek()));
+
+                    stack.pop();
+
+                    if (stack.peek() instanceof FunctionToken) {
+                        output.add(stack.pop());
+                    }
+                }
+            }
+            if (token instanceof OperatorToken) {
+                OperatorToken o1 = (OperatorToken) token;
+                while (stack.peek() instanceof OperatorToken) {
+                    OperatorToken o2 = (OperatorToken) stack.peek();
+                    boolean leftAssoc = o1.isLeftAssociative() && o1.getPrecendence() <= o2.getPrecendence();
+                    boolean rightAssoc = o1.isRightAssociative() && o1.getPrecendence() < o2.getPrecendence();
+                    if (leftAssoc || rightAssoc) {
+                        output.add(stack.pop());
+                    } else {
+                        break;
+                    }
+                }
+                stack.push(token);
+            }
+        }
+
+        while (!stack.isEmpty()) {
+            if (stack.peek() instanceof SeparatorToken) {
+                throw new CalculationException("mismatched paranthesis");
+            }
+            output.add(stack.pop());
+        }
+
+        return output;
+    }
+
+    private boolean isLeftParen(Token peek) {
+        return false;
     }
 
 }
