@@ -16,4 +16,8 @@ public class Token {
     public String toString() {
         return (op ? "OP:" : "VAL:") + str;
     }
+
+    public String getString() {
+        return str;
+    }
 }

@@ -23,4 +23,16 @@ public class MainTest {
         assertEquals(Arrays.asList(11.0), results);
     }
 
+
+    @Test
+    public void tokenize() throws Exception {
+//        String input = "7 + abs(x - 2 * 5) / y + 4 * abs(3 - 9)";
+        String input = "7+abs(x-2.5221*5)/variableName+4*abs(3.363-9.21)";
+        ShuntYard shunt = new ShuntYard(CalcContext.createDefault());
+        List<Token> tokens = shunt.tokenize(input);
+        List<String> expected = Arrays.asList("7","+","abs(","x","-","2.5221","*","5",")","/",
+                "variableName","+","4","*","abs(","3.363","-","9.21",")");
+        List<String> actual = tokens.stream().map(Token::getString).collect(Collectors.toList());
+        assertEquals(expected, actual);
+    }
 }
