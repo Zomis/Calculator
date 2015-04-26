@@ -40,12 +40,12 @@ public class ShuntYard {
 
             if (data.charAt(end) == ',' || data.charAt(end) == '(' || data.charAt(end) == ')') {
                 opLength = 1;
-                token = new Token(data.substring(end, end + opLength).trim(), true);
+                token = new SeparatorToken(data.charAt(end));
             } else {
                 Optional<Operator> operator = context.operators.stream().filter(op -> match(data, currEnd, op.getKey())).findFirst();
                 if (operator.isPresent()) {
                     opLength = operator.get().getKey().length();
-                    token = new Token(data.substring(end, end + opLength).trim(), true);
+                    token = new OperatorToken(data.substring(end, end + opLength).trim(), operator.get());
                 } else {
                     Optional<Map.Entry<String, CalcFunction>> function = context.functions.entrySet()
                             .stream()
@@ -55,7 +55,7 @@ public class ShuntYard {
 
                     if (function.isPresent()) {
                         opLength = function.get().getKey().length() + 1;
-                        token = new Token(data.substring(end, end + opLength).trim(), true);
+                        token = new FunctionToken(function.get().getKey(), function.get().getValue());
                     }
                 }
             }
@@ -63,7 +63,7 @@ public class ShuntYard {
             if (token != null) {
                 String op = data.substring(i, end).trim();
                 if (!op.isEmpty()) {
-                    results.add(new Token(op, false));
+                    results.add(new ValueToken(op));
                 }
                 results.add(token);
                 end += opLength - 1;
@@ -73,7 +73,7 @@ public class ShuntYard {
 
         String lastPart = data.substring(i).trim();
         if (!lastPart.isEmpty()) {
-            results.add(new Token(lastPart, false));
+            results.add(new ValueToken(lastPart));
         }
 
         return results;

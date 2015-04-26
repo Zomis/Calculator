@@ -3,21 +3,15 @@ package net.zomis.calculator.model;
 /**
  * Created by Simon on 4/26/2015.
  */
-public class Token {
-    private final String str;
-    private final boolean op;
-
-    public Token(String string, boolean operator) {
-        this.str = string;
-        this.op = operator;
+public abstract class Token {
+    public Token() {
     }
 
     @Override
     public String toString() {
-        return (op ? "OP:" : "VAL:") + str;
+        return opType() + getString();
     }
 
-    public String getString() {
-        return str;
-    }
+    public abstract String getString();
+    public abstract String opType();
 }
