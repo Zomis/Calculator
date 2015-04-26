@@ -44,7 +44,10 @@ public class ShuntYard {
 
                 if (opLength > 0) {
                     results.add(new Token(data.substring(i, end).trim(), false));
-                    results.add(new Token(data.substring(end, end + opLength).trim(), true));
+                    String valueString = data.substring(end, end + opLength).trim();
+                    if (!valueString.isEmpty()) {
+                        results.add(new Token(valueString, true));
+                    }
                     end += opLength;
                     i = end;
                 }
