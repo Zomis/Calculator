@@ -95,6 +95,7 @@ public class ShuntYard {
             }
             if (token instanceof FunctionToken) {
                 stack.push(token);
+                stack.push(new SeparatorToken('('));
             }
             if (token instanceof SeparatorToken) {
                 SeparatorToken sep = (SeparatorToken) token;
@@ -108,9 +109,9 @@ public class ShuntYard {
                     stack.push(token);
                 }
                 if (sep.getString().equals(")")) {
-                    do {
+                    while (!isLeftParen(stack.peek())) {
                         output.add(stack.pop());
-                    } while (!isLeftParen(stack.peek()));
+                    }
 
                     stack.pop();
 
@@ -146,7 +147,11 @@ public class ShuntYard {
     }
 
     private boolean isLeftParen(Token peek) {
-        return false;
+        if (!(peek instanceof SeparatorToken)) {
+            return false;
+        }
+        SeparatorToken sep = (SeparatorToken) peek;
+        return sep.getString().equals("(");
     }
 
 }
