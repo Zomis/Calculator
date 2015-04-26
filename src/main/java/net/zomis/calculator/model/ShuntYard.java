@@ -18,58 +18,57 @@ public class ShuntYard {
     public List<Token> tokenize(String data) {
         List<Token> results = new ArrayList<>();
         int i = 0;
-        while (i < data.length()) {
-            // find the first operator or function call
-            // extract a token out of it
-            // move i to the new position
 
-            // example token separators: '+', 'mod', 'func(', '(', ')'
-            int end = i;
-            for (; end < data.length(); end++) {
-                if (data.charAt(end) == ' ') {
-                    continue;
-                }
-                if (Character.isDigit(data.charAt(end))) {
-                    continue;
-                }
-                if (data.charAt(end) == '.') {
-                    continue;
-                }
+        // find the first operator or function call
+        // extract a token out of it
+        // move i to the new position
 
-                int opLength = -1;
-                for (Operator op : context.operators) {
-                    opLength = match(data, end, op.getKey()) ? op.getKey().length() : opLength;
-                }
-                for (String op : context.functions.keySet()) {
-                    opLength = match(data, end, op) && data.charAt(end + op.length()) == '('
-                            ? op.length() + 1 : opLength;
-                }
-                if (data.charAt(end) == ',') {
-                    opLength = 1;
-                }
-                if (data.charAt(end) == ')') {
-                    opLength = 1;
-                }
-
-                if (opLength > 0) {
-                    String op = data.substring(i, end).trim();
-                    if (!op.isEmpty()) {
-                        results.add(new Token(op, false));
-                    }
-
-                    String valueString = data.substring(end, end + opLength).trim();
-                    if (!valueString.isEmpty()) {
-                        results.add(new Token(valueString, true));
-                    }
-                    end += opLength - 1;
-                    i = end + 1;
-                }
+        // example token separators: '+', 'mod', 'func(', '(', ')'
+        int end = i;
+        for (; end < data.length(); end++) {
+            if (data.charAt(end) == ' ') {
+                continue;
+            }
+            if (Character.isDigit(data.charAt(end))) {
+                continue;
+            }
+            if (data.charAt(end) == '.') {
+                continue;
             }
 
-            String lastPart = data.substring(i).trim();
-            if (!lastPart.isEmpty()) {
-                results.add(new Token(lastPart, false));
+            int opLength = -1;
+            for (Operator op : context.operators) {
+                opLength = match(data, end, op.getKey()) ? op.getKey().length() : opLength;
             }
+            for (String op : context.functions.keySet()) {
+                opLength = match(data, end, op) && data.charAt(end + op.length()) == '('
+                        ? op.length() + 1 : opLength;
+            }
+            if (data.charAt(end) == ',') {
+                opLength = 1;
+            }
+            if (data.charAt(end) == ')') {
+                opLength = 1;
+            }
+
+            if (opLength > 0) {
+                String op = data.substring(i, end).trim();
+                if (!op.isEmpty()) {
+                    results.add(new Token(op, false));
+                }
+
+                String valueString = data.substring(end, end + opLength).trim();
+                if (!valueString.isEmpty()) {
+                    results.add(new Token(valueString, true));
+                }
+                end += opLength - 1;
+                i = end + 1;
+            }
+        }
+
+        String lastPart = data.substring(i).trim();
+        if (!lastPart.isEmpty()) {
+            results.add(new Token(lastPart, false));
         }
 
         return results;
