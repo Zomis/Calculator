@@ -19,9 +19,9 @@ public class CalcContext {
     private static final Pattern VALUE = Pattern.compile("^-?\\d+(\\.\\d+)?$");
     private static final Pattern IDENTIFIER = Pattern.compile("^[A-Za-z][A-Za-z\\d_]*$");
     private static final Pattern FUNCTION_CALL = Pattern.compile("([a-zA-Z]+)\\(");
-    private final List<Operator> operators = new ArrayList<>();
-    private final Map<String, CalcFunction> functions = new HashMap<>();
-    private final Map<String, Expression> variables = new HashMap<>();
+    final List<Operator> operators = new ArrayList<>();
+    final Map<String, CalcFunction> functions = new HashMap<>();
+    final Map<String, Expression> variables = new HashMap<>();
 
     private CalcContext() {}
 
