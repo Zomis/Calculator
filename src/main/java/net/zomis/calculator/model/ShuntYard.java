@@ -26,7 +26,15 @@ public class ShuntYard {
             // example token separators: '+', 'mod', 'func(', '(', ')'
             int end = i;
             for (; end < data.length(); end++) {
-
+                if (data.charAt(end) == ' ') {
+                    continue;
+                }
+                if (Character.isDigit(data.charAt(end))) {
+                    continue;
+                }
+                if (data.charAt(end) == '.') {
+                    continue;
+                }
                 int opLength = -1;
                 for (Operator op : context.operators) {
                     opLength = match(data, end, op.getKey()) ? op.getKey().length() : opLength;
