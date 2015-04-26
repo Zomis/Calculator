@@ -35,6 +35,7 @@ public class ShuntYard {
                 if (data.charAt(end) == '.') {
                     continue;
                 }
+
                 int opLength = -1;
                 for (Operator op : context.operators) {
                     opLength = match(data, end, op.getKey()) ? op.getKey().length() : opLength;
@@ -51,16 +52,24 @@ public class ShuntYard {
                 }
 
                 if (opLength > 0) {
-                    results.add(new Token(data.substring(i, end).trim(), false));
+                    String op = data.substring(i, end).trim();
+                    if (!op.isEmpty()) {
+                        results.add(new Token(op, false));
+                    }
+
                     String valueString = data.substring(end, end + opLength).trim();
                     if (!valueString.isEmpty()) {
                         results.add(new Token(valueString, true));
                     }
-                    end += opLength;
-                    i = end;
+                    end += opLength - 1;
+                    i = end + 1;
                 }
             }
-            results.add(new Token(data.substring(i).trim(), true));
+
+            String lastPart = data.substring(i).trim();
+            if (!lastPart.isEmpty()) {
+                results.add(new Token(lastPart, false));
+            }
         }
 
         return results;
