@@ -63,6 +63,7 @@ public class ShuntYard {
             if (token != null) {
                 String op = data.substring(i, end).trim();
                 if (!op.isEmpty()) {
+                    // TODO: if there is nothing here, treat the operator as unary (assuming it is an operator)
                     results.add(new ValueToken(op));
                 }
                 results.add(token);
@@ -85,8 +86,7 @@ public class ShuntYard {
 
     public List<Token> shuntYard(List<Token> tokens) throws CalculationException {
         List<Token> output = new ArrayList<>();
-//        Stack<Token> stack = new Stack<>();
-        LinkedList<Token> stack = new LinkedList<>();
+        Deque<Token> stack = new LinkedList<>();
 
         for (Token token : tokens) {
 
