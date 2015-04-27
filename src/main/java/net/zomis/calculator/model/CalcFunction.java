@@ -13,10 +13,16 @@ public class CalcFunction {
 
     private final Predicate<ValueExpression[]> predicate;
     private final ToDoubleFunction<ValueExpression[]> function;
+    private final ToDoubleFunction<StackAdapter> fnc;
 
-    public CalcFunction(Predicate<ValueExpression[]> predicate, ToDoubleFunction<ValueExpression[]> function) {
+    public CalcFunction(ToDoubleFunction<StackAdapter> fnc, Predicate<ValueExpression[]> predicate, ToDoubleFunction<ValueExpression[]> function) {
         this.predicate = predicate;
         this.function = function;
+        this.fnc = fnc;
+    }
+
+    public ValueTypeToken evaluate(CalcContext context, StackAdapter stack) throws CalculationException {
+        return new ValueTypeToken(double.class, fnc.applyAsDouble(stack));
     }
 
     public ValueExpression evaluate(CalcContext context, String paramData) throws CalculationException {

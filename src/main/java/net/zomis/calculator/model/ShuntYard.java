@@ -1,5 +1,7 @@
 package net.zomis.calculator.model;
 
+import net.zomis.calculator.model.expressions.ValueExpression;
+
 import java.util.*;
 
 /**
@@ -63,8 +65,12 @@ public class ShuntYard {
             if (token != null) {
                 String op = data.substring(i, end).trim();
                 if (!op.isEmpty()) {
-                    // TODO: if there is nothing here, treat the operator as unary (assuming it is an operator)
                     results.add(new ValueToken(op));
+                } else if (token instanceof OperatorToken) {
+                    if (results.isEmpty() || !results.get(results.size() - 1).getString().equals(")")) {
+                        OperatorToken operatorToken = (OperatorToken) token;
+                        token = new OperatorToken(operatorToken.getOperator().getKey(), operatorToken.getOperator().asUnary());
+                    }
                 }
                 results.add(token);
                 end += opLength - 1;
@@ -153,5 +159,33 @@ public class ShuntYard {
         SeparatorToken sep = (SeparatorToken) peek;
         return sep.getString().equals("(");
     }
+
+    public ValueTypeToken performReversePolishNotation(List<Token> tokens) throws CalculationException {
+        Deque<ValueTypeToken> stack = new LinkedList<>();
+        StackAdapter stacks = new StackAdapter(stack, context);
+        for (Token token : tokens) {
+            if (token instanceof OperatorToken) {
+                OperatorToken op = (OperatorToken) token;
+                stack.push(op.getOperator().apply(stacks));
+            } else if (token instanceof FunctionToken) {
+                FunctionToken func = (FunctionToken) token;
+                ValueTypeToken result = func.getFunction().evaluate(context, stacks);
+                stack.push(result);
+            } else if (token instanceof SeparatorToken) {
+                System.out.println("separator - action ??????");
+            } else if (token instanceof ValueToken) {
+                ValueToken value = (ValueToken) token;
+                stack.push(value.toValueType(context));
+            } else if (token instanceof ValueTypeToken) {
+                ValueTypeToken value = (ValueTypeToken) token;
+                stack.push(value);
+            } else {
+                throw new IllegalStateException("Unknown token type: " + token);
+            }
+            System.out.println(token + " stack contains: " + stack);
+        }
+        return stack.pop();
+    }
+
 
 }

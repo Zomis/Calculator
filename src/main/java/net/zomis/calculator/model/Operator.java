@@ -1,5 +1,6 @@
 package net.zomis.calculator.model;
 
+import java.util.Deque;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 
@@ -44,5 +45,21 @@ public class Operator {
 
     public int getPrecendence() {
         return precendence;
+    }
+
+    public ValueTypeToken apply(StackAdapter stack) {
+        double a = stack.pop();
+        double b = stack.pop();
+        return new ValueTypeToken(double.class, op.applyAsDouble(b, a));
+    }
+
+    public Operator asUnary() {
+        return new Operator(key, associativity, precendence * 2, null, unaryOperator) {
+            @Override
+            public ValueTypeToken apply(StackAdapter stack) {
+                double a = stack.pop();
+                return new ValueTypeToken(double.class, unaryOperator.applyAsDouble(a));
+            }
+        };
     }
 }

@@ -23,4 +23,8 @@ public class FunctionToken extends Token {
     public String opType() {
         return "FNC";
     }
+
+    public CalcFunction getFunction() {
+        return function;
+    }
 }

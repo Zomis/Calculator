@@ -117,7 +117,9 @@ public class CalcContext {
 
     public static CalcContext createDefault() {
         CalcContext context = new CalcContext();
-        context.functions.put("abs", new CalcFunction(exp -> exp.length == 1, exp -> Math.abs(exp[0].getValue())));
+        context.functions.put("abs", new CalcFunction(s -> Math.abs(s.pop()), pred -> pred.length == 1, s -> Math.abs(s[0].getValue()) ));
+        context.functions.put("if", new CalcFunction(s -> s.params(3, a -> a[0] > 0 ? a[1] : a[2]),
+           exp -> exp.length == 3, exp -> exp[0].getValue() > 0 ? exp[1].getValue() : exp[2].getValue()));
 
         context.operators.add(new Operator("+", Associativity.LEFT, 2, (a, b) -> a + b));
         context.operators.add(new Operator("-", Associativity.LEFT, 2, (a, b) -> a - b, a -> -a));
@@ -125,7 +127,7 @@ public class CalcContext {
         context.operators.add(new Operator("*", Associativity.LEFT, 3, (a, b) -> a * b));
         context.operators.add(new Operator("/", Associativity.LEFT, 3, (a, b) -> a / b));
 
-        context.operators.add(new Operator("^", Associativity.RIGHT, 4, (a, b) -> Math.pow(a, b)));
+        context.operators.add(new Operator("^", Associativity.RIGHT, 5, (a, b) -> Math.pow(a, b)));
         return context;
     }
 

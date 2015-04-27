@@ -6,6 +6,7 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -56,11 +57,30 @@ public class CalcTest {
     public double expected;
 
     @Test
-    public void test() throws CalculationException {
+    public void test() {
         CalcContext context = CalcContext.createDefault();
         try {
             assertEquals(input, expected, context.createExpression(input).evaluate().getValue(), DELTA);
         } catch (CalculationException ex) {
+            throw new RuntimeException(input, ex);
+        }
+    }
+
+    @Test
+    public void testReversePolish() {
+        System.out.println();
+        System.out.println();
+        System.out.println("INPUT: " + input);
+        CalcContext context = CalcContext.createDefault();
+        ShuntYard shuntYard = new ShuntYard(context);
+        List<Token> tokens = shuntYard.tokenize(input);
+        System.out.println("TOKENS: " + tokens);
+        try {
+            List<Token> reversePolish = shuntYard.shuntYard(tokens);
+            System.out.println("REVPOL: " + reversePolish);
+            ValueTypeToken result = shuntYard.performReversePolishNotation(reversePolish);
+            assertEquals(input, expected, (Double) result.getValue(), DELTA);
+        } catch (Exception ex) {
             throw new RuntimeException(input, ex);
         }
     }

@@ -31,4 +31,8 @@ public class OperatorToken extends Token {
     public int getPrecendence() {
         return operator.getPrecendence();
     }
+
+    public Operator getOperator() {
+        return operator;
+    }
 }
